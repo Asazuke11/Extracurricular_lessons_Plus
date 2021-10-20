@@ -5,7 +5,7 @@ const ctx = cvs.getContext("2d");
 
 
 const SCREEN_SIZE_WIDTH = 512;
-const SCREEN_SIZE_HEIGHT = 448;
+const SCREEN_SIZE_HEIGHT = 480;
 
 cvs.width = SCREEN_SIZE_WIDTH ;
 cvs.height = SCREEN_SIZE_HEIGHT;
