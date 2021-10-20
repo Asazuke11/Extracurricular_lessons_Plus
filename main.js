@@ -84,36 +84,9 @@ const keyButton = {
   Right:false
 };
 
-///////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-//ここで使うスプライトシートは、二次配布禁止の著作物なので、
-//実際に作る方は、画像はここからダウンロードしてね。
-//　→　https://seiga.nicovideo.jp/seiga/im3657666
-
-//画像の読み込み。読み込んだら mainLoop関数を実行。
-const chaImg = new Image();
-chaImg.src = "SpriteSheet.png";
-chaImg.onload = () => {
-  mainLoop();
-}
-
-
-
-
-function mainLoop(){
-  game_parameter.frameCount++;
-    update();
-    draw();
-  requestAnimationFrame(mainLoop);
-};
-
-
 //コントローラー//
+//左を押されれば leftプロパティをtrueに,ボタン離せばfalseに。
+//右も同じです。左右共にfalseならば静止中です。
 
 document.onkeydown = (e) => {
   if(e.key === "ArrowLeft"){ keyButton.Left = true;}
@@ -125,8 +98,76 @@ document.onkeyup = (e) => {
   if(e.key === "ArrowRight"){ keyButton.Right = false;}
 };
 
+///////////////////////////////////////////////////////////////////////////////////
 
 
+
+//ここで使うスプライトシートは、二次配布禁止の著作物なので、
+//実際に作る方は、画像はここからダウンロードしてね。
+//　→　https://seiga.nicovideo.jp/seiga/im3657666
+
+//画像の読み込み。
+const chaImg = new Image();
+chaImg.src = "SpriteSheet.png";
+
+
+
+
+
+/*************************************************************
+今回はsetIntervalではなく、
+requestAnimationFrame関数の使用。
+
+違い)
+setInterval → 機械側の都合関係なく設定したリズムを刻む。
+requestAnimationFrame → 機械側が描画の更新準備が整った時に呼び出し。
+
+※requestAnimationFrameはディスプレイの性能に依存します。
+倍速になる人は
+ setInterval(mainLoop,60);
+ で。
+ 
+ちなみにrequestAnimationFrameは再帰関数です。(入門コース３章３項のあれ)
+
+mainLoopが動くと、フレームカウンターが＋１、
+update関数とdraw関数を実行。
+
+ディスプレイが描画の準備が整ったところでmainLoopを実行。
+延々のループ。
+
+*************************************************************/
+//画像読み込みが終わったところでmainLoop実行
+chaImg.onload = () => {
+  mainLoop();
+}
+
+
+
+function mainLoop(){
+  game_parameter.frameCount++;
+    update();
+    draw();
+  requestAnimationFrame(mainLoop);  // ←　意味不明なんですけどって時は、setIntervalで。ほぼ同じです。
+};
+
+
+/*****************************
+↑ 
+mainLoop関数の中の
+requestAnimationFrame(mainLoop);
+を消して
+
+chaImg.onload = () => {
+  setInterval(mainLoop,60);
+}
+
+でも同じ。
+******************************/
+
+
+
+
+//実際に背景とキャラクターを描画の実行をさせる関数
 function draw() {
 
   //表示画面
@@ -150,7 +191,8 @@ function draw() {
 
 
 
-
+//キャラクターの位置の値に変更があったときに値を更新する関数。
+//draw関数はこの値を利用して描画します。
 function update(){
   //横移動
   if(keyButton.Left){
@@ -171,7 +213,6 @@ function update(){
 
 
   //アニメーション設定
-
   game_parameter.anime_count %= 750;
 
 
