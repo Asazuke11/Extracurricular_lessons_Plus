@@ -315,6 +315,8 @@ function update(){
   
 
   //左右ワープ設定 （ただ単に、キャラクターが画面からでたら左右逆からでてくるだけです
+  // ※ちなみに if文にも { } を省略する書き方があります。
+ 
   if(game_parameter.x < -65) game_parameter.x = SCREEN_SIZE_WIDTH;
   else if(game_parameter.x > SCREEN_SIZE_WIDTH +32) game_parameter.x = (game_parameter.x % SCREEN_SIZE_WIDTH) -64;
 
