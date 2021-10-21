@@ -111,12 +111,16 @@ const chaImg = new Image();
 chaImg.src = "SpriteSheet.png";
 
 
+//画像読み込みが終わった後から、mainLoop実行
+chaImg.onload = () => {
+  mainLoop();
+}
 
 
 
 /*************************************************************
 今回はsetIntervalではなく、
-requestAnimationFrame関数の使用。
+requestAnimationFrame関数を使用してみます。
 
 違い)
 setInterval → 機械側の都合関係なく設定したリズムを刻む。
@@ -128,26 +132,23 @@ requestAnimationFrame → 機械側が描画の更新準備が整った時に呼
  で。
  
 ちなみにrequestAnimationFrameは再帰関数です。(入門コース３章３項のあれ)
+流れ)
 
-mainLoopが動くと、フレームカウンターが＋１、
+mainLoopが動くと、フレームカウンター　＋１
+↓
 update関数とdraw関数を実行。
-
+↓
 ディスプレイが描画の準備が整ったところでmainLoopを実行。
-延々のループ。
+
+以後、延々のループ。
 
 *************************************************************/
-//画像読み込みが終わったところでmainLoop実行
-chaImg.onload = () => {
-  mainLoop();
-}
-
-
 
 function mainLoop(){
   game_parameter.frameCount++;
     update();
     draw();
-  requestAnimationFrame(mainLoop);  // ←　意味不明なんですけどって時は、setIntervalで。ほぼ同じです。
+  requestAnimationFrame(mainLoop);  // ←　「意味不明なんですけど」って時は、setIntervalで。ほぼ同じです。
 };
 
 
@@ -166,16 +167,45 @@ chaImg.onload = () => {
 
 
 
+//////////////////////////////////////////////////////////////////
 
-//実際に背景とキャラクターを描画の実行をさせる関数
+
+
+//実際に背景とキャラクターを描画の実行する関数
 function draw() {
 
   //表示画面
-  ctx.fillStyle = "#6af";
+ 
+  //canvas全体を青色に指定
+  ctx.fillStyle = "#6af"; 
   ctx.fillRect(0, 0, SCREEN_SIZE_WIDTH, SCREEN_SIZE_HEIGHT);
-  //                   (切り抜き位置,配置位置)
+ 
+ 
+  //スプレットシートのイメージを表示。
+  /***********************************************************
+  drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh)
+  image: 読み込んだ画像データ
+  sx   : (スプレットシート側の)切り抜きの x 始点
+  sy   : (スプレットシート側の)切り抜きの y 始点
+  sw   : (スプレットシート側の)切り抜きする 横幅
+  sh   : (スプレットシート側の)切り抜きする 高さ
+  ドット絵が 32 x 48 px の大きさで並んでいるので
+  一番左上のキャラを表示したい場合の sx,sy,sw,sh は (0,0,32,48)
+  
+  dx   : 切り抜いたイメージの描画位置の x 始点
+  dy   : 切り抜いたイメージの描画位置の y 始点
+  dw   : 切り抜いたイメージの横幅
+  dh   : 切り抜いたイメージの高さ
+  
+  ※　dw と dh で実際描画される大きさを決めます。この値を変えることで
+  　　切り抜いた部分を小さくしたり大きくしたりできます。
+    　今回はMAG変数に2を入れてるので、実際の画像を２倍にして描画してます。
+     
+  ***********************************************************/
+  //背景イメージの描画
   ctx.drawImage(chaImg,0,960,256,80,0,160,256 * MAG,80 * MAG);
 
+  //各パラメータ数値を見える化(デバッグ)。おかしな挙動したらこの値をみてね。
   ctx.fillStyle = "#fff";
   ctx.fillText(`FRAME:${game_parameter.frameCount}`,0,10);
   ctx.fillText(`x:${game_parameter.x}`,0,30);
@@ -184,14 +214,23 @@ function draw() {
   ctx.fillText(`sprite_num_x:${game_parameter.sprite_num_x}`,0,90);
   ctx.fillText(`sprite_num_y:${game_parameter.sprite_num_y}`,0,110);
   ctx.fillText(`dir:${game_parameter.dir}`,0,130);
+ 
+ 
+ 
+ /********************************************************************
+ ここがキャラクターを描画部分。ほぼほぼ全部の引数部分が変数になっています。
+ つまりはupdate関数で値を変えたものが反映されてます。今回は値が動かない
+ コマの基本の大きさの 32 x 48 と、ジャンプせず歩くだけなので高さを209と
+ 直書きしてますが、ここもおそらくは変数にして書いたほうがよさそう。
+ ********************************************************************/
+　//キャラクタイメージの描画
+  ctx.drawImage(chaImg,game_parameter.sprite_num_x,game_parameter.sprite_num_y,32,48,game_parameter.x,209,32 * MAG,48 * MAG);
 
-  ctx.drawImage(chaImg,game_parameter.sprite_num_x,game_parameter.sprite_num_y,32,48,game_parameter.x,209,32 << 1,48 << 1);
-
-}
+};
 
 
 
-//キャラクターの位置の値に変更があったときに値を更新する関数。
+//キャラクターの位置に変更があったときに値を更新する関数。
 //draw関数はこの値を利用して描画します。
 function update(){
   //横移動
