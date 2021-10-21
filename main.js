@@ -225,7 +225,7 @@ function draw() {
  書いたほうがよさそう。
  ********************************************************************/
 　//キャラクタイメージの描画
-  ctx.drawImage(chaImg,game_parameter.sprite_num_x,game_parameter.sprite_num_y,32,48,game_parameter.x,game_parameter.,32 * MAG,48 * MAG);
+  ctx.drawImage(chaImg,game_parameter.sprite_num_x,game_parameter.sprite_num_y,32,48,game_parameter.x,game_parameter.y,32 * MAG,48 * MAG);
 };
 
 
