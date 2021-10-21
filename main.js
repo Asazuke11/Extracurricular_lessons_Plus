@@ -63,8 +63,8 @@ frameCount   : プログラムが動きだしてからのカウント・時間�
 **********************************************************************************/
 
 const game_parameter = {
-  x            : 100,
-  y            : 100,
+  x            : SCREEN_SIZE_WIDTH / 2 - 16, // キャラクタ位置をcanvasの中心に。x = (枠の大きさ÷２)-(キャラの横幅の半分)
+  y            : 209,
   vx           : 0,
   sprite_num_x : 0,
   sprite_num_y : 0,
@@ -225,13 +225,28 @@ function draw() {
  ********************************************************************/
 　//キャラクタイメージの描画
   ctx.drawImage(chaImg,game_parameter.sprite_num_x,game_parameter.sprite_num_y,32,48,game_parameter.x,209,32 * MAG,48 * MAG);
-
 };
 
 
 
-//キャラクターの位置に変更があったときに値を更新する関数。
-//draw関数はこの値を利用して描画します。
+
+
+/********************************************************************
+キー操作があったときにパラメータの値を変える関数です。
+ほぼほぼ基本的なif文のみ。onkeydown,okeyupで左右のtrue,falseと
+値が変わったときに反応します。
+
+もし、キー左がtrue になった場合、
+方向情報の dir を １　に
+もし加速度の値が　-4　を越えない間 + (-1)
+
+右側も同じ。左も右もfalseの場合は dir を 0　にして静止状態に。
+
+もしdir が 0 の場合、加速度xv　の値を 左右どっちの場合も 0 へ向かう加減計算。
+これやらないと、キーを離した途端にキャラクターがビダドメとなり膝をこわします。
+
+********************************************************************/
+
 function update(){
   //横移動
   if(keyButton.Left){
@@ -249,31 +264,57 @@ function update(){
   }
 
 
+ //ここで表示位置 x に 加速度分値を加算。これで次のdraw関数が動いたときにキャラが動きます。 
+ game_parameter.x += game_parameter.vx;
+ 
 
+ 
+ 
+ /*************************************************************************
+ キャラクターをコマ送りでアニメーションさせるための処理。
+ frameCountの数値でもいいのですが、あえてアニメーションの速さを調整するのに
+ frameCountの1/4のスピードでカウントするanime_countを作っています。
+ 
+ 変更するのは切り抜くイラストの開始座標。(横幅と高さは 32 x 48 px と常に同じな為。
+ おそらくはここが、このプログラムの難所なんしょ。
+ 
+ if文について
+ 
+ もし、向きが０(静止中)で、加速度が０ならば
+ スプレットシートの切り抜きを (0,0)に。(スプレットシートの一番左上のイラスト)
+ 
+ dir が 1 の場合(左向き)
+ 切り抜き位置座標 y を 48 に。(スプライトシートの左上から下に48px位置に書かれた絵を表示)
+ 
+ x 座標は、(game_parameter.anime_count % 8)で、アニメカウントを０～７の間をループ。
+ 
+ その数値に、キャラの横幅 32 をかけることで、横幅 32 px で歩くコマが描かれたスプライトシート
+ の絵が、順次横にスライドしてアニメーションします。
+ 
+ *************************************************************************/
 
   //アニメーション設定
-  game_parameter.anime_count %= 750;
-
-
   //アニメーションスピードの調整
   if((game_parameter.frameCount) % 4 === 0) game_parameter.anime_count++;
+  game_parameter.anime_count %= 800; // 数値が800になったら０にリセット。(800の値に意味は無い模様
 
-  if (game_parameter.dir === 0 && game_parameter.vx === 0){
+ 
+  if (game_parameter.dir === 0 && game_parameter.vx === 0){ // 静止中で加速度0のとき
     game_parameter.sprite_num_y = 0;
     game_parameter.sprite_num_x = 0;
-  }else if (game_parameter.dir === 1) {
+  }else if (game_parameter.dir === 1) { //左向きのとき
     game_parameter.sprite_num_y = 48;
     game_parameter.sprite_num_x = (game_parameter.anime_count % 8) * 32;
-  }else if(game_parameter.dir === 2){
+  }else if(game_parameter.dir === 2){  //右向きのとき
     game_parameter.sprite_num_y = 96;
     game_parameter.sprite_num_x = (game_parameter.anime_count % 8) * 32;
   };
 
 
 
-  game_parameter.x += game_parameter.vx;
+  
 
-  //左右ワープ設定
+  //左右ワープ設定 （ただ単に、キャラクターが画面からでたら左右逆からでてくるだけです
   if(game_parameter.x < -65) game_parameter.x = SCREEN_SIZE_WIDTH;
   else if(game_parameter.x > SCREEN_SIZE_WIDTH +32) game_parameter.x = (game_parameter.x % SCREEN_SIZE_WIDTH) -64;
 
