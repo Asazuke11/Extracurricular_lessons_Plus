@@ -131,7 +131,7 @@ requestAnimationFrame → 機械側が描画の更新準備が整った時に呼
  setInterval(mainLoop,60);
  で。
  
-ちなみにrequestAnimationFrameは再帰関数です。(入門コース３章３項のあれ)
+ちなみにrequestAnimationFrameは再帰です。(入門コース３章３項のあれ)
 流れ)
 
 mainLoopが動くと、フレームカウンター　＋１
