@@ -215,6 +215,7 @@ function draw() {
   ctx.fillText(`sprite_num_y:${game_parameter.sprite_num_y}`,0,110);
   ctx.fillText(`dir:${game_parameter.dir}`,0,130);
  
+  ctx.fillText(`左移動　←　KEY　→　右移動　`,170,350); 
  
  
  /********************************************************************
