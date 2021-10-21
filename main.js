@@ -221,11 +221,11 @@ function draw() {
  /********************************************************************
  ここがキャラクターを描画部分。ほぼほぼ全部の引数部分が変数になっています。
  つまりはupdate関数で値を変えたものが反映されてます。今回は値が動かない
- コマの基本の大きさの 32 x 48 と、ジャンプせず歩くだけなので高さを209と
- 直書きしてますが、ここもおそらくは変数にして書いたほうがよさそう。
+ コマの基本の大きさの 32 x 48 と 直書きしてますが、ここもおそらくは変数にして
+ 書いたほうがよさそう。
  ********************************************************************/
 　//キャラクタイメージの描画
-  ctx.drawImage(chaImg,game_parameter.sprite_num_x,game_parameter.sprite_num_y,32,48,game_parameter.x,209,32 * MAG,48 * MAG);
+  ctx.drawImage(chaImg,game_parameter.sprite_num_x,game_parameter.sprite_num_y,32,48,game_parameter.x,game_parameter.,32 * MAG,48 * MAG);
 };
 
 
