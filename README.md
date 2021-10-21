@@ -1,5 +1,5 @@
 # Extracurricular_lessons_Plus
-N予備校課外授業「Google Chrome のあのゲームを作ろう！」を使って、  
+N予備校課外授業「[Google Chrome のあのゲームを作ろう！](https://www.youtube.com/watch?v=PKc1OD7LIJg)」を使って、  
 「**ドット絵でレトロゲームぽくする**」の、  
 お勉強のリポジトリです。
 <br><br>
